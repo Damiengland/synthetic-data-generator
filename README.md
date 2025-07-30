@@ -1,72 +1,72 @@
-# **LLM Joke Generation Exercise**
+# Synthetic Data Generator
 
-This project is an educational exercise, a rebuild of a previous project, designed to demonstrate how to perform inference with various large language models (LLMs) from Hugging Face, utilizing 4-bit quantization for efficient memory usage, particularly on GPU-constrained environments like Google Colab. The primary goal is to generate light-hearted jokes using different instruction-tuned models.
+This project utilizes the Llama 3.1 8B Instruct model to generate high-quality, synthetic datasets based on user-defined prompts. It provides a simple interface using Gradio to interact with the model and save the generated data to Google Drive.
 
-## **Features**
+## Features
 
-* **Hugging Face Model Integration**: Easily load and utilize popular instruction-tuned LLMs from the Hugging Face Hub.  
-* **4-bit Quantization**: Implement bitsandbytes for efficient model loading and inference, significantly reducing GPU memory footprint.  
-* **Text Generation**: Generate creative and light-hearted text responses based on a given prompt.  
-* **Memory Management**: Includes explicit garbage collection and CUDA cache clearing for optimized resource usage.
+- **Powerful LLM:** Leverages the `meta-llama/Llama-3.1-8B-Instruct` model for text generation.
+- **Efficient Inference:** Uses 4-bit quantization (`bitsandbytes`) to run the model efficiently on consumer-grade GPUs (like Google Colab's T4).
+- **Customizable Prompts:** Easily configurable system and user prompts to tailor the data generation to specific needs.
+- **JSON Output:** Designed to produce structured JSON output, ideal for creating datasets.
+- **Interactive UI:** A simple web interface powered by Gradio for easy interaction.
+- **Google Drive Integration:** Automatically saves the generated data to your Google Drive.
 
-## **Prerequisites**
+## Requirements
 
-To run this notebook, you will need:
+The project is designed to be run in a Google Colab environment. The following libraries are required:
 
-* **Google Colab Environment**: The notebook is designed to run in Google Colab, leveraging its GPU capabilities.  
-* **Hugging Face Token**: A Hugging Face user access token with read access to models. This token should be stored securely in Colab's user data secrets.
+- `torch`
+- `torchvision`
+- `torchaudio`
+- `requests`
+- `bitsandbytes`
+- `transformers`
+- `accelerate`
+- `openai`
+- `gradio`
+- `huggingface_hub`
 
-## **Usage**
+## Setup & Installation
 
-Follow the steps below to execute the notebook and generate jokes:
+1.  **Clone the Repository:**
+    Clone or download the project files to your local machine or Google Drive.
 
-1. **Set up Hugging Face Token**:  
-   * In Google Colab, go to the left sidebar, click on the "Secrets" (key icon).  
-   * Add a new secret with the name HF\_TOKEN and paste your Hugging Face user access token as the value.  
-   * Enable "Notebook access" for this secret.  
-   * Run the cell that logs into Hugging Face:  
-     from google.colab import userdata  
-     from huggingface\_hub import login  
-     hf\_token \= userdata.get('HF\_TOKEN')  
-     login(hf\_token, add\_to\_git\_credential=True)
+2.  **Open in Google Colab:**
+    Upload and open the `synthetic_data_generator.ipynb` notebook in Google Colab.
 
-2. **Define Models**: The notebook pre-defines several model paths. You can choose which model to use for generation.  
-   LLAMA \= "meta-llama/Meta-Llama-3.1-8B-Instruct"  
-   PHI3 \= "microsoft/Phi-3-mini-4k-instruct"  
-   GEMMA2 \= "google/gemma-2-2b-it"  
-   QWEN2 \= "Qwen/Qwen2-7B-Instruct"
+3.  **API Keys and Tokens:**
+    This project requires access to the Hugging Face model and the OpenAI API. You need to store your credentials as secrets in Google Colab.
+    - Go to the "Secrets" tab in the left sidebar of your Colab notebook.
+    - Add the following secrets:
+        - `HF_TOKEN`: Your Hugging Face access token with read permissions.
+        - `OPENAI_API_KEY`: Your OpenAI API key.
 
-   *Note*: In the provided notebook, LLAMA is set as the default model for the initial tokenizer and model loading.  
-3. **Define Messages**: Customize the messages array to change the prompt. The example is set to generate a light-hearted joke for "Nuke Artists".  
-   messages \= \[  
-       {"role": "system", "content": "You are a helpful assistant"},  
-       {"role": "user", "content": "Tell a light-hearted joke for a room of Nuke Artists"}  
-   \]
+4.  **Install Dependencies:**
+    Run the first code cell in the notebook to install all the required Python packages.
 
-4. **Run the generate function**: The core logic is encapsulated in the generate function. Call it with your chosen model and messages.  
-   \# Example: generate(LLAMA, messages)  
-   generate(QWEN2, messages)
+    ```python
+    !pip install -q --upgrade torch==2.5.1+cu124 torchvision==0.20.1+cu124 torchaudio==2.5.1+cu124 --index-url [https://download.pytorch.org/whl/cu124](https://download.pytorch.org/whl/cu124)
+    !pip install -q requests bitsandbytes==0.46.0 transformers==4.48.3 accelerate==1.3.0 openai
+    ```
 
-   *Ensure the quant\_config is defined before running generate.*
+5.  **Authorize Google Drive:**
+    When you run the cell to mount Google Drive, you will be prompted to authorize Colab to access your Drive files. This is necessary for saving the output.
 
-## **Models Supported**
+## How to Run
 
-This exercise is configured to work with the following instruction-tuned models from Hugging Face:
+1.  **Execute Cells:** Run the cells in the notebook sequentially from top to bottom.
+2.  **Wait for Model to Load:** The model is several gigabytes and will take some time to download and load into the GPU memory.
+3.  **Launch the UI:** The final cell will launch a Gradio interface directly within the notebook output.
+4.  **Generate Data:**
+    - Enter your prompt in the input text box (e.g., `I need 5 user reviews for a new coffee machine.`).
+    - Click the "Submit" button.
+    - The generated text will appear in the output box.
+5.  **Find Your Data:** The generated output will also be saved as a `.txt` file in your Google Drive, located at `/MyDrive/04_Projects/Python Projects/synthetic_data_generator/Llama_Responses/`.
 
-* meta-llama/Meta-Llama-3.1-8B-Instruct (assigned to LLAMA)  
-* microsoft/Phi-3-mini-4k-instruct (assigned to PHI3)  
-* google/gemma-2-2b-it (assigned to GEMMA2)  
-* Qwen/Qwen2-7B-Instruct (assigned to QWEN2)
+## Author
 
-You can modify the generate function call to experiment with different models.
+Damien England
 
-## **Notes & Troubleshooting**
+## License
 
-* **Educational Rebuild**: This project is a rebuild of a previous exercise. Its purpose is educational, focusing on the practical aspects of LLM inference with quantization.  
-* **Sequential Execution**: Ensure you run the cells in the llm-hf-joker.ipynb notebook sequentially from top to bottom. Skipping cells or running them out of order might lead to NameError or other issues (e.g., model or QWEN2 not being defined).  
-* **GPU Availability**: Make sure your Colab runtime type is set to use a GPU (Runtime \-\> Change runtime type \-\> GPU).  
-* **Hugging Face Access**: If you encounter issues with model loading, double-check your HF\_TOKEN secret and ensure it has proper access.
-
-## **License**
-
-This project is open-sourced under the MIT License. See the [LICENSE](https://www.google.com/search?q=LICENSE) file for more details.
+This project is licensed under the MIT License.
